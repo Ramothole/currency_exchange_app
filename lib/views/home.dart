@@ -3,6 +3,7 @@ import 'package:currency_exchange_app/viewmodel/available_currencies_viewmodel.d
 import 'package:currency_exchange_app/viewmodel/currency_rate_viewmodel.dart';
 import 'package:currency_exchange_app/views/check_currency_exchange.dart';
 import 'package:currency_exchange_app/views/current_rate_screen.dart';
+import 'package:currency_exchange_app/views/line_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const CurrentRateScreen(),
     const HistoricalExchangeRate(),
-    Container()
+    CurrencyLineChart()
   ];
 
   @override
@@ -38,6 +39,7 @@ class _HomePageState extends State<HomePage> {
       repository:  HistoricalDataService(),
     ),
     child: Scaffold(
+      backgroundColor:Colors.grey[200],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
@@ -65,11 +67,5 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _currentIndex = index;
     });
-    // if (index == 0) {
-    //   Provider.of<CurrencyViewModel>(context, listen: false).getCurrencies();
-    // } else if (index == 1) {
-    //   Provider.of<AvailableCurrenciesViewModel>(context,listen: false);
-    // } else if (index == 2) {
-    // }
   }
 }
