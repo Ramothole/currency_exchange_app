@@ -21,6 +21,7 @@ class _CurrentRateScreenState extends State<CurrentRateScreen> {
   Widget build(BuildContext context) {
     return Consumer<CurrencyViewModel>(builder: (context, viewModel, child) {
       return Scaffold(
+        appBar: AppBar(title: Text('Tex'),),
         body: states(viewModel),
       );
     });
