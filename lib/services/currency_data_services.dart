@@ -22,7 +22,7 @@ class HistoricalDataService {
     );
 
     if (response.statusCode == HttpStatus.ok) {
-      return HistoricalData.fromRawJson(response.body);
+            return HistoricalData.fromRawJson(response.body);
     } else if (response.statusCode == HttpStatus.notFound) {
       return null;
     } else {

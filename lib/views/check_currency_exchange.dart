@@ -2,12 +2,10 @@ import 'package:currency_exchange_app/core/date_format.dart';
 import 'package:currency_exchange_app/core/states_management.dart';
 import 'package:currency_exchange_app/models/history.dart';
 import 'package:currency_exchange_app/viewmodel/available_currencies_viewmodel.dart';
-import 'package:currency_exchange_app/viewmodel/currency_rate_viewmodel.dart';
 import 'package:currency_exchange_app/viewmodel/historical_currency_data.dart';
-import 'package:currency_exchange_app/views/bar_chart.dart';
-import 'package:currency_exchange_app/views/line_chart.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class HistoricalExchangeRate extends StatefulWidget {
@@ -36,7 +34,7 @@ class _HistoricalExchangeRateState extends State<HistoricalExchangeRate> {
       return Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
-          title: const Text('Currency Rate'),
+          title: const Text('Currency Rate Chart'),
           backgroundColor: Colors.white,
         ),
         body: Consumer<AvailableCurrenciesViewModel>(
@@ -50,7 +48,7 @@ class _HistoricalExchangeRateState extends State<HistoricalExchangeRate> {
                 return showErrorAlert(
                     context,
                     historyViewModel.historicalCurrencyDate!.priceData!.isEmpty,
-                    historyViewModel!.errorMessage);
+                    historyViewModel.errorMessage);
               default:
                 return Container(); // You can provide a default widget here
             }
@@ -87,7 +85,7 @@ class _HistoricalExchangeRateState extends State<HistoricalExchangeRate> {
                   child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: Colors
-                            .grey[300], //background color of dropdown button
+                            .grey[300],
                         border: Border.all(color: Colors.black38, width: 1),
                         borderRadius: BorderRadius.circular(50),
                       ),
@@ -136,6 +134,7 @@ class _HistoricalExchangeRateState extends State<HistoricalExchangeRate> {
                             items: viewModel
                                 .availableCurrencies?.currencies.entries
                                 .map<DropdownMenuItem<String>>((currency) {
+                                  viewModel.availableCurrencies!.currencies.remove(currency.key == selectedCurrencyDropdown1);
                               return DropdownMenuItem<String>(
                                 value: currency.key,
                                 child: Text(currency.key),
@@ -154,94 +153,91 @@ class _HistoricalExchangeRateState extends State<HistoricalExchangeRate> {
                             iconEnabledColor: Colors.white, //Icon color
                             style: const TextStyle(
                                 //te
-                                color: Colors.black, //Font color
-                                fontSize: 20 //font size on dropdown button
+                                color: Colors.black,
+                                fontSize: 20 
                                 ),
                             dropdownColor:
-                                Colors.white, //dropdown background color
-                            underline: Container(), //remove underline
+                                Colors.white,
+                            underline: Container(), 
                           ))),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Row(
               children: [
-                Container(
-                    child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          border: Border.all(
-                              color: Colors.black38,
-                              width: 1), //border of dropdown button
-                          borderRadius: BorderRadius.circular(
-                              60), //border raiuds of dropdown button
+                DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      border: Border.all(
+                          color: Colors.black38,
+                          width: 1), //border of dropdown button
+                      borderRadius: BorderRadius.circular(
+                          60), //border raiuds of dropdown button
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontStyle: FontStyle.normal),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              textStyle: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontStyle: FontStyle.normal),
-                            ),
-                            onPressed: () => _selectDate(context),
-                            child: const Text(
-                              'Select Date',
-                              style: TextStyle(color: Colors.black, fontSize: 15),
-                            ),
-                          ),
-                        ))),
+                        onPressed: () => _selectDate(context),
+                        child: const Text(
+                          'Select Date',
+                          style: TextStyle(color: Colors.black, fontSize: 15),
+                        ),
+                      ),
+                    )),
                 const SizedBox(width: 16.0),
-                Container(
-                    child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          border: Border.all(
-                              color: Colors.black38,
-                              width: 1), //border of dropdown button
-                          borderRadius: BorderRadius.circular(
-                              60), //border raiuds of dropdown button
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20),
-                          child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                textStyle: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                    fontStyle: FontStyle.normal),
-                              ),
-                              onPressed: () {
-                                historicalViewModel = Provider.of<
-                                        HistoricalDataCurrenciesViewModel>(
-                                    context,
-                                    listen: false);
-                                DateTime thirtyDaysFromSeleted =
-                                    selectedDate!.add(const Duration(days: 30));
-                                historicalViewModel.getHistoricalData(
-                                    selectedCurrencyDropdown1!,
-                                    selectedCurrencyDropdown2!,
-                                    getFormattedDateTime(selectedDate!),
-                                    getFormattedDateTime(thirtyDaysFromSeleted));
-                                setState(() {
-                                  onPressed = true;
-                                });
-                              },
-                              child: const Text(
-                                'Get Rates',
-                                style: TextStyle(
-                                    //te
-                                    color: Colors.black, //Font color
-                                    fontSize: 15 //font size on dropdown button
-                                    ),
-                              )),
-                        ))),
+                DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      border: Border.all(
+                          color: Colors.black38,
+                          width: 1), //border of dropdown button
+                      borderRadius: BorderRadius.circular(
+                          60),                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            textStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontStyle: FontStyle.normal),
+                          ),
+                          onPressed: () {
+                            historicalViewModel = Provider.of<
+                                    HistoricalDataCurrenciesViewModel>(
+                                context,
+                                listen: false);
+                            DateTime thirtyDaysFromSeleted =
+                                selectedDate!.add(const Duration(days: 30));
+                            historicalViewModel.getHistoricalData(
+                                selectedCurrencyDropdown1!,
+                                selectedCurrencyDropdown2!,
+                                getFormattedDateTime(selectedDate!),
+                                getFormattedDateTime(thirtyDaysFromSeleted));
+                            setState(() {
+                              onPressed = true;
+                            });
+                          },
+                          child: const Text(
+                            'Get Rates',
+                            style: TextStyle(
+                                //te
+                                color: Colors.black, //Font color
+                                fontSize: 15 //font size on dropdown button
+                                ),
+                          )),
+                    )),
               ],
             ),
             onPressed! && historicalViewModel.historicalCurrencyDate != null
@@ -261,7 +257,7 @@ class _HistoricalExchangeRateState extends State<HistoricalExchangeRate> {
             padding: const EdgeInsets.only(top: 16),
             child: BarChart(
               BarChartData(
-                  groupsSpace: 10,
+                  groupsSpace: 16,
                   alignment: BarChartAlignment.spaceBetween,
                   gridData: FlGridData(show: true),
                   titlesData: FlTitlesData(
@@ -273,7 +269,7 @@ class _HistoricalExchangeRateState extends State<HistoricalExchangeRate> {
                         getTitlesWidget: (double value, TitleMeta meta) {
                           return SideTitleWidget(
                             axisSide: meta.axisSide,
-                            child: getTitlesBottom(value),
+                            child: getTitlesBottom(value,historicalViewModel),
                           );
                         },
                       ),
@@ -315,8 +311,9 @@ class _HistoricalExchangeRateState extends State<HistoricalExchangeRate> {
 
   List<BarChartGroupData> _chartGroups(
       context, HistoricalDataCurrenciesViewModel viewModel) {
+         int index = 0;
     return viewModel.historicalCurrencyDate!.priceData!.entries.map((point) {
-      int index = 0;
+
       String date = point.key;
       String numericDate = date.replaceAll(RegExp(r'[^0-9]'), '');
       CurrencyData currencyData = point.value;
@@ -335,21 +332,24 @@ class _HistoricalExchangeRateState extends State<HistoricalExchangeRate> {
     }).toList();
   }
 
-  Text getTitlesBottom(value) {
-    if (value.toInt() == 0) {
-      return const Text(
-        'date',
-        style: TextStyle(color: Colors.black54, fontSize: 12),
-      );
-    } else if (value.toInt() == 2) {
-      return const Text(
-        'date',
-        style: TextStyle(color: Colors.black),
-      );
-    }
-    return Text('');
+Text getTitlesBottom(value,viewModel) {
+  int index = value.toInt();
+  List<String> dates = viewModel.historicalCurrencyDate!.priceData!.keys.toList();
+  
+  if (index >= 0 && index < dates.length) {
+    String date = dates[index];
+      final dateFormat = DateFormat('yyyy-MM-dd');
+      
+      String formattedDate =  dateFormat.format(DateTime.parse(date));
+    return Text(
+      formattedDate,
+      style: TextStyle(color: Colors.black54, fontSize: 12),
+    );
   }
+  
+  return Text('');
 
+}
   Widget rightTitles(double value, TitleMeta meta) {
     return Text(
       '',

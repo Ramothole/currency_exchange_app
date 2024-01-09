@@ -3,7 +3,6 @@ import 'package:currency_exchange_app/viewmodel/available_currencies_viewmodel.d
 import 'package:currency_exchange_app/viewmodel/currency_rate_viewmodel.dart';
 import 'package:currency_exchange_app/views/check_currency_exchange.dart';
 import 'package:currency_exchange_app/views/current_rate_screen.dart';
-import 'package:currency_exchange_app/views/line_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +28,6 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const CurrentRateScreen(),
     const HistoricalExchangeRate(),
-    CurrencyLineChart()
   ];
 
   @override
@@ -46,15 +44,11 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.currency_exchange_outlined),
-            label: 'Current Rate',
+            label: 'Current Rate Charts',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart_outlined),
             label: 'Bar Chart',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.stacked_line_chart_outlined),
-            label: 'Line Chart',
           ),
         ],
       ),
